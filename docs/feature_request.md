@@ -7,16 +7,20 @@ assignees: ''
 
 ---
 
-**Describe the feature**
+### Describe the feature
+
 A clear and concise description of what you want to happen.
 
-**Why is this useful?**
+### Why is this useful?
+
 How does it help users save more tokens or improve workflow?
 
-**Additional context**
+### Additional context
+
 Screenshots, examples, or similar tools (if any).
 
-**Priority (optional)**
+### Priority (optional)
+
 - [ ] Must-have
 - [ ] Nice-to-have
 - [ ] Future idea
