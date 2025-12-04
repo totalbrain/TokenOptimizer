@@ -1,0 +1,3 @@
+tkinter
+pytest
+pyinstaller
