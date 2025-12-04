@@ -3,6 +3,16 @@ import tkinter as tk
 from tkinter import ttk, filedialog, messagebox, scrolledtext
 import webbrowser
 import re
+import os
+
+# Drag-and-drop relies on native tkdnd bindings, so we import tkinterdnd2 optionally to avoid crashes when unavailable.
+try:
+    from tkinterdnd2 import DND_FILES, TkinterDnD
+    TKDND_AVAILABLE = True
+except ImportError:
+    DND_FILES = None
+    TkinterDnD = tk.Tk  # fallback so type is available
+    TKDND_AVAILABLE = False
 
 class AITokenCrusher:
     def __init__(self, root):
@@ -71,6 +81,9 @@ class AITokenCrusher:
         self.checkbuttons = []
 
         self.create_ui()
+
+        # Enable drag & drop if tkdnd is available
+        self.enable_drag_and_drop()
 
     def create_ui(self):
         theme = self.themes["dark" if self.is_dark_theme else "light"]
@@ -252,6 +265,39 @@ class AITokenCrusher:
         for link in self.link_labels:
             link.configure(bg=theme["bg"], fg=theme["accent"])
 
+    def enable_drag_and_drop(self):
+        """Enable drag & drop for files into the input text area (if supported)."""
+        if not TKDND_AVAILABLE or DND_FILES is None:
+            return
+        try:
+            self.input_text.drop_target_register(DND_FILES)
+            self.input_text.dnd_bind("<<Drop>>", self.on_drop_files)
+        except Exception:
+            # If tkdnd is not correctly configured on the system, just skip DnD
+            pass
+
+    def on_drop_files(self, event):
+        """Handle files dropped into the input text area."""
+        # event.data is a Tcl list of file paths, may contain braces around paths with spaces
+        file_paths = self.root.splitlist(event.data)
+        allowed_exts = {".py", ".txt", ".md"}
+
+        for path in file_paths:
+            ext = os.path.splitext(path)[1].lower()
+            if ext not in allowed_exts:
+                continue
+            try:
+                with open(path, "r", encoding="utf-8") as f:
+                    content = f.read()
+                self.input_text.delete(1.0, tk.END)
+                self.input_text.insert(tk.END, content)
+                return
+            except Exception as e:
+                messagebox.showerror("Error", f"Failed to read file:\n{path}\n\n{e}")
+
+        # If we reach here, either no valid file was found or extensions were unsupported
+        messagebox.showwarning("Unsupported", "You can only drop .py, .txt, or .md files here.")
+
     def load_file(self):
         path = filedialog.askopenfilename(filetypes=[("All Files", "*.*")])
         if path:
@@ -321,6 +367,10 @@ class AITokenCrusher:
         return text.strip() + "\n"
 
 if __name__ == "__main__":
-    root = tk.Tk()
+    # Use TkinterDnD's Tk if available, otherwise fall back to standard Tk
+    if TKDND_AVAILABLE:
+        root = TkinterDnD.Tk()
+    else:
+        root = tk.Tk()
     app = AITokenCrusher(root)
     root.mainloop()

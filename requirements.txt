@@ -1,3 +1,4 @@
+tkinterdnd2
 tkinter
 pytest
 pyinstaller
