@@ -6,7 +6,7 @@ AI Token Crusher – Full Journey (From Idea to Production)
 - Project Board (Roadmap): https://github.com/users/totalbrain/projects/1
 - Product Hunt Launch (coming soon): https://www.producthunt.com/posts/ai-token-crusher
 - Workflow : https://github.com/totalbrain/TokenOptimizer/blob/dev/docs/Workflow.md
-- 
+ 
 ## The Story – How It All Started
 One day I was tired of:
 - Wasting thousands of tokens daily on long Python scripts and RAG documents
@@ -63,4 +63,5 @@ Made with passion, frustration with token limits, and love for AI developers.
 November 2025
 
 AI Token Crusher – Because nobody should pay for whitespace.
+
 
