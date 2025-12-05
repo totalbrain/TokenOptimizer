@@ -12,7 +12,7 @@ def apply_optimizations(options, text):
     if options["remove_extra_spaces"].get():
         text = re.sub(r'[ \t]+', ' ', text)
     if options["single_line_mode"].get():
-        text = text.replace("\n", "⏎")  # بدون \n آخر
+        text = text.replace("\n", "⏎") 
     if options["shorten_keywords"].get():
         rep = {
             "def ": "d ", "return ": "r ", "import ": "i ", "from ": "f ", "as ": "a ",
@@ -34,9 +34,9 @@ def apply_optimizations(options, text):
         text = re.sub(r',\s+', ',', text)
         text = re.sub(r':\s+', ':', text)
     if options["unicode_shortcuts"].get():
-        text = text.replace(" in ", "∈").replace(" not in ", "∉")
-        text = re.sub(r'\bin\b', '∈', text)
         text = re.sub(r'\bnot\s+in\b', '∉', text)
+        text = re.sub(r'\bin\b', '∈', text)
+        text = text.replace(" not in ", "∉").replace(" in ", "∈")
     if options["shorten_print"].get():
         text = re.sub(r'print\s*\(', 'p(', text)
     return text.rstrip() + "\n" if text.strip() else text  # فقط یه \n آخر
