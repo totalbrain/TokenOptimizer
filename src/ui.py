@@ -74,7 +74,9 @@ def create_ui(app):
         app.checkbuttons.append(cb)
 
     # Crush button
-    ttk.Button(main, text="CRUSH TOKENS →", command=app.optimize).pack(pady=20)
+    crush_btn = ttk.Button(main, text="CRUSH TOKENS →", command=app.optimize)
+    crush_btn.pack(pady=20)
+    app.ui_elements["crush_btn"] = crush_btn
 
     # Output panel
     output_frame = tk.LabelFrame(main, text=" Crushed Output (AI-Safe) ", fg=theme["text_bright"], bg=theme["frame_bg"], font=("Segoe UI", 10, "bold"))

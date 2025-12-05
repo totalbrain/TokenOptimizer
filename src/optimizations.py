@@ -12,15 +12,21 @@ def apply_optimizations(options, text):
     if options["remove_extra_spaces"].get():
         text = re.sub(r'[ \t]+', ' ', text)
     if options["single_line_mode"].get():
-        text = text.replace("\n", "⏎")
+        text = text.replace("\n", "⏎")  # بدون \n آخر
     if options["shorten_keywords"].get():
-        rep = {"def ": "d ", "return ": "r ", "import ": "i ", "from ": "f ", "as ": "a ", "if ": "if", "class ": "c ", "lambda ": "λ "}
+        rep = {
+            "def ": "d ", "return ": "r ", "import ": "i ", "from ": "f ", "as ": "a ",
+            "if ": "if", "class ": "c ", "lambda ": "λ "
+        }
         for k, v in rep.items():
             text = text.replace(k, v)
     if options["replace_booleans"].get():
         text = text.replace("True", "1").replace("False", "0").replace("None", "~")
     if options["use_short_operators"].get():
-        text = text.replace("==", "≡").replace("!=", "≠").replace(" and ", "∧").replace(" or ", "∨")
+        text = text.replace("==", "≡").replace("!=", "≠")
+        text = text.replace(" and ", "∧").replace(" or ", "∨")
+        text = re.sub(r'\band\b', '∧', text)
+        text = re.sub(r'\bor\b', '∨', text)
     if options["remove_type_hints"].get():
         text = re.sub(r':\s*[^=\n\->]+', '', text)
         text = re.sub(r'->\s*[^:\n]+', '', text)
@@ -29,6 +35,8 @@ def apply_optimizations(options, text):
         text = re.sub(r':\s+', ':', text)
     if options["unicode_shortcuts"].get():
         text = text.replace(" in ", "∈").replace(" not in ", "∉")
+        text = re.sub(r'\bin\b', '∈', text)
+        text = re.sub(r'\bnot\s+in\b', '∉', text)
     if options["shorten_print"].get():
         text = re.sub(r'print\s*\(', 'p(', text)
-    return text.strip() + "\n"
+    return text.rstrip() + "\n" if text.strip() else text  # فقط یه \n آخر

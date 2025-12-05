@@ -1,47 +1,61 @@
 """
 Test suite for optimization techniques
+Works with current config.py (OPTIONS_DEFAULT as dict)
 """
+import tkinter as tk
 import pytest
 from src.optimizations import apply_optimizations
-from src.config import OPTIONS
+from src.config import OPTIONS_DEFAULT
+
 
 @pytest.fixture
-def clean_options():
-    # Reset all options to default before each test
-    for var in OPTIONS.values():
-        var.set(True)
-    return OPTIONS
+def opts():
+    """Convert OPTIONS_DEFAULT dict to actual BooleanVar objects (like app does)"""
+    options = {}
+    for key, default in OPTIONS_DEFAULT.items():
+        var = tk.BooleanVar()
+        var.set(default)  # Set to default value
+        options[key] = var
+    return options
 
-def test_remove_comments(clean_options):
-    input_text = "print('hello')  # this is a comment\nx = 1"
-    result = apply_optimizations(clean_options, input_text)
+
+def test_remove_comments(opts):
+    text = "print('hello')  # this comment will be gone"
+    result = apply_optimizations(opts, text)
     assert "#" not in result
 
-def test_remove_docstrings(clean_options):
-    input_text = '"""This is docstring"""\ndef hello():\n    pass'
-    result = apply_optimizations(clean_options, input_text)
+
+def test_remove_docstrings(opts):
+    text = '"""This is a docstring"""\ndef x():\n    pass'
+    result = apply_optimizations(opts, text)
     assert "docstring" not in result
 
-def test_single_line_mode(clean_options):
-    clean_options["single_line_mode"].set(True)
-    input_text = "line1\nline2\nline3"
-    result = apply_optimizations(clean_options, input_text)
+
+def test_single_line_mode(opts):
+    opts["single_line_mode"].set(True)
+    text = "line1\nline2\nline3"
+    result = apply_optimizations(opts, text)
     assert "⏎" in result
     assert "\n" not in result
 
-def test_unicode_shortcuts(clean_options):
-    input_text = "x in mylist and y not in banned"
-    result = apply_optimizations(clean_options, input_text)
-    assert "∈" in result and "∉" in result
 
-def test_shorten_keywords(clean_options):
-    clean_options["shorten_keywords"].set(True)
-    input_text = "def hello(): return 42"
-    result = apply_optimizations(clean_options, input_text)
+def test_unicode_shortcuts(opts):
+    text = "x in items and y not in banned"
+    result = apply_optimizations(opts, text)
+    assert "∈" in result
+    assert "∉" in result
+
+
+def test_shorten_keywords(opts):
+    opts["shorten_keywords"].set(True)
+    text = "def hello():\n    return 42"
+    result = apply_optimizations(opts, text)
     assert result.strip().startswith("d hello()")
+    assert "r 42" in result
 
-def test_boolean_replacement(clean_options):
-    clean_options["replace_booleans"].set(True)
-    input_text = "x = True if False else None"
-    result = apply_optimizations(clean_options, input_text)
-    assert "1" in result and "0" in result and "~" in result
+
+def test_boolean_replacement(opts):
+    opts["replace_booleans"].set(True)
+    text = "True and False or None"
+    result = apply_optimizations(opts, text)
+    assert result == "1 and 0 or ~"
