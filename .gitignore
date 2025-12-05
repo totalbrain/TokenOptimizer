@@ -1,0 +1,30 @@
+# Windows
+Thumbs.db
+Desktop.ini
+.BIN/
+
+# macOS
+.DS_Store
+
+# Python/Node
+__pycache__/
+*.py[cod]
+venv/
+env/
+.env
+node_modules/
+dist/
+build/
+
+# Editors
+.vscode/
+.idea/
+
+# Temp
+_temp/
+_trash/
+
+*.pyc
+
+*.egg-info/
+.pytest_cache/

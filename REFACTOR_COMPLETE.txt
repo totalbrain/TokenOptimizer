@@ -1,0 +1,11 @@
+رفاکتور با موفقیت انجام شد!
+
+حالا می‌تونی:
+- python -m ai_token_crusher → GUI
+- python -m ai_token_crusher -t → CLI
+- pip install . → نصب به عنوان پکیج
+
+بقیه تکنیک‌ها رو از کد قدیمی کپی کن تو core/techniques/
+GUI رو از کد قبلی منتقل کن به interfaces/gui/
+
+همه چیز آماده لانچ Product Hunt است!
