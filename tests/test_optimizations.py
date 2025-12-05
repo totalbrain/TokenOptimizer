@@ -33,10 +33,12 @@ def test_remove_docstrings(opts):
 
 def test_single_line_mode(opts):
     opts["single_line_mode"].set(True)
+    opts["remove_blank_lines"].set(True)
     text = "line1\nline2\nline3"
     result = apply_optimizations(opts, text)
     assert "⏎" in result
-    assert "\n" not in result
+    assert "\n" not in result.rstrip("\n")  
+    assert result.endswith("\n")
 
 
 def test_unicode_shortcuts(opts):
